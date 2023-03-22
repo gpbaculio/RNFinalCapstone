@@ -13,13 +13,12 @@ export type NativeStackNavigatorParamList = {
 
 const NativeStack = createNativeStackNavigator<NativeStackNavigatorParamList>();
 
-const options = {
-  header: () => <Header />,
-};
 const Navigation = () => (
   <NativeStack.Navigator initialRouteName='Onboarding'>
     <NativeStack.Screen
-      options={options}
+      options={{
+        header: () => <Header />,
+      }}
       name='Onboarding'
       component={Onboarding}
     />
