@@ -1,19 +1,19 @@
-import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
+
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
+import * as Yup from "yup";
+
 import {
   DynamicView,
   DynamicText,
   DynamicTextInput,
   DynamicPressable,
 } from "src/components";
-import { useRootNavigation } from "src/navigation/hooks";
-import * as Yup from "yup";
 
-type OnboardingFormData = {
-  firstName: string;
-  email: string;
-};
+import { useRootNavigation } from "src/navigation/hooks";
+
+type OnboardingFormData = { firstName: string; email: string };
 
 export const handleFormColor = (isError: boolean) =>
   isError ? "red" : "#495E57";
