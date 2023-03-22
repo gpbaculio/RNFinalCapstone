@@ -7,6 +7,7 @@ import {
   DynamicTextInput,
   DynamicPressable,
 } from "src/components";
+import { useRootNavigation } from "src/navigation/hooks";
 import * as Yup from "yup";
 
 type OnboardingFormData = {
@@ -18,6 +19,8 @@ export const handleFormColor = (isError: boolean) =>
   isError ? "red" : "#495E57";
 
 const Onboarding = () => {
+  const navigation = useRootNavigation();
+
   const {
     control,
     handleSubmit,
@@ -30,7 +33,7 @@ const Onboarding = () => {
   const hasErrors = !!Object.keys(errors).length;
 
   const onSubmit = ({ firstName, email }: OnboardingFormData) => {
-    console.log("sss");
+    navigation.navigate("Profile");
   };
 
   return (
