@@ -46,7 +46,12 @@ const Onboarding = () => {
           backgroundColor='#AFAFAF'
           justifyContent='space-between'
           paddingVertical='xL'>
-          <DynamicText mt='xxL' color='#495E57' fontWeight='600' fontSize={21}>
+          <DynamicText
+            mt='xxL'
+            mb='l'
+            color='#495E57'
+            fontWeight='600'
+            fontSize={21}>
             Let us get to know you
           </DynamicText>
           <DynamicView width='100%'>
