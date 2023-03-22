@@ -1,4 +1,5 @@
-import SQLite from 'expo-sqlite';
+import * as SQLite from 'expo-sqlite';
+
 import {DataType} from './utils';
 
 const db = SQLite.openDatabase('little_lemon');

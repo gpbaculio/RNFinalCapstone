@@ -1,23 +1,26 @@
-import React from "react";
-import { StyleSheet } from "react-native";
+import React from 'react';
+import {StyleSheet} from 'react-native';
 
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { NavigationContainer } from "@react-navigation/native";
-import { ThemeProvider } from "@shopify/restyle";
-import { Provider } from "react-redux";
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {NavigationContainer} from '@react-navigation/native';
+import {ThemeProvider} from '@shopify/restyle';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
 
-import restyleTheme from "restyleTheme";
-import { initializeStore } from "src/store";
+import restyleTheme from 'restyleTheme';
+import {store, persistor} from 'src/store';
 
-const store = initializeStore();
+type AppContainerProps = {children: React.ReactNode};
 
-type AppContainerProps = { children: React.ReactNode };
-
-const AppContainer = ({ children }: AppContainerProps) => (
+const AppContainer = ({children}: AppContainerProps) => (
   <NavigationContainer>
     <GestureHandlerRootView style={styles.container}>
       <ThemeProvider theme={restyleTheme}>
-        <Provider store={store}>{children}</Provider>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            {children}
+          </PersistGate>
+        </Provider>
       </ThemeProvider>
     </GestureHandlerRootView>
   </NavigationContainer>
@@ -26,5 +29,5 @@ const AppContainer = ({ children }: AppContainerProps) => (
 export default AppContainer;
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: {flex: 1},
 });

@@ -13,6 +13,7 @@ import {
 } from 'src/components';
 
 import {useRootNavigation} from 'src/navigation/hooks';
+import {useAuthentication} from 'src/store';
 
 type OnboardingFormData = {firstName: string; email: string};
 
@@ -36,9 +37,9 @@ const Onboarding = () => {
   });
 
   const hasErrors = !!Object.keys(errors).length;
-
+  const {actions} = useAuthentication();
   const onSubmit = ({firstName, email}: OnboardingFormData) => {
-    navigation.navigate('Profile');
+    actions.setUser({firstName, email});
   };
 
   return (

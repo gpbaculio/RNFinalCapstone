@@ -1,11 +1,11 @@
-import { SET_USER } from "./constants";
+import {SET_USER} from './constants';
 
 export type UserType = {
-  firstName: string;
-  lastName: string;
-  image: string | null;
-  email: string;
-  phone: string;
+  firstName?: string;
+  lastName?: string;
+  image?: string | null;
+  email?: string;
+  phone?: string;
 };
 
 export type AuthenticationStateType = {
@@ -14,7 +14,7 @@ export type AuthenticationStateType = {
 
 export type SetUserType = {
   type: typeof SET_USER;
-  payload: { value: UserType | null };
+  payload: {value: UserType | null};
 };
 
 export type AuthenticationActionTypes = SetUserType;
