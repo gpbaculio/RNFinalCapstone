@@ -15,7 +15,7 @@ const Header = () => {
       <DynamicImage
         source={logo}
         width={width * 0.4}
-        height={33}
+        height={60}
         resizeMode='contain'
       />
     </DynamicView>
