@@ -2,6 +2,8 @@ import {View, Text, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {createTable, getMenuItems} from './database';
 import {SectionDataType} from './utils';
+import {DynamicPressable, DynamicView} from 'src/components';
+import {useRootNavigation} from 'src/navigation/hooks';
 
 const API_URL =
   'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json';
@@ -39,11 +41,17 @@ const Home = () => {
 
     didMount();
   }, []);
+  const nav = useRootNavigation();
 
   return (
-    <View>
-      <Text>Home</Text>
-    </View>
+    <DynamicView flex={1} variant="center">
+      <DynamicPressable
+        onPress={() => {
+          nav.navigate('Profile');
+        }}>
+        <Text>Home</Text>
+      </DynamicPressable>
+    </DynamicView>
   );
 };
 

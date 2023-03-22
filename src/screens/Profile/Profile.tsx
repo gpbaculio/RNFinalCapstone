@@ -17,6 +17,7 @@ import {
   KeyboardScroll,
 } from 'src/components';
 import {handleFormColor} from '../Onboarding/Onboarding';
+import {useAuthentication} from 'src/store';
 
 type ProfileFormData = {
   firstName: string;
@@ -26,7 +27,7 @@ type ProfileFormData = {
 };
 
 const Profile = () => {
-  const [image, setImage] = useState<string | null>(null);
+  const {state, actions} = useAuthentication();
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -40,10 +41,9 @@ const Profile = () => {
     console.log(result);
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      actions.setUser({image: result.assets[0].uri});
     }
   };
-  console.log('image ', image);
 
   const {
     control,
@@ -71,9 +71,9 @@ const Profile = () => {
             <DynamicText variant="profileLabel" color="#AFAFAF">
               Avatar
             </DynamicText>
-            {image ? (
+            {state.user?.image ? (
               <DynamicImage
-                source={{uri: image}}
+                source={{uri: state.user?.image}}
                 mt="xxs"
                 width={60}
                 height={60}
