@@ -16,9 +16,7 @@ const NativeStack = createNativeStackNavigator<NativeStackNavigatorParamList>();
 const Navigation = () => (
   <NativeStack.Navigator initialRouteName='Onboarding'>
     <NativeStack.Screen
-      options={{
-        header: () => <Header />,
-      }}
+      options={{ header: Header }}
       name='Onboarding'
       component={Onboarding}
     />
