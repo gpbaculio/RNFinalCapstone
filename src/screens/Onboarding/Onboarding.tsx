@@ -73,6 +73,7 @@ const Onboarding = () => {
             ) : null}
           </DynamicView>
           <DynamicView
+            mt='l'
             variant='center'
             alignItems='center'
             width='100%'
