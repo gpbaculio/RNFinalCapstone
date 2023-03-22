@@ -29,6 +29,10 @@ const Onboarding = () => {
   } = useForm<OnboardingFormData>({
     resolver,
     mode: "onChange",
+    defaultValues: {
+      firstName: "sss",
+      email: "as@gmail.com",
+    },
   });
 
   const hasErrors = !!Object.keys(errors).length;

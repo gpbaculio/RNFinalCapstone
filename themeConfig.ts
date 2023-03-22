@@ -18,10 +18,12 @@ export const colors = {
   "#FBDABB": "#FBDABB",
   "#AFAFAF": "#AFAFAF",
   red: "red",
+  "#57B87D": "#57B87D",
 };
 
 export const spacing = {
-  xxs: 4,
+  xxxs: 4,
+  xxs: 6,
   xs: 8,
   s: 12,
   m: 16,
