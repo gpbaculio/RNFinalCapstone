@@ -97,4 +97,8 @@ export const textVariants = {
   error: {
     color: "red",
   },
+  profileLabel: {
+    fontWeight: "600",
+    fontSize: 14,
+  },
 };
