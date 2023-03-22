@@ -14,9 +14,7 @@ const KeyboardScroll = ({children}: KeyboardScrollProps) => (
 export default KeyboardScroll;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: {flex: 1},
   content: {
     flexGrow: 1,
   },

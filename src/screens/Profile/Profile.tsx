@@ -1,14 +1,15 @@
-import {View, Text} from 'react-native';
 import React, {useState} from 'react';
 
 import {Controller, useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import {MaskedTextInput} from 'react-native-mask-text';
 import 'yup-phone';
+import * as ImagePicker from 'expo-image-picker';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {
-  DynamicMaskedTextInput,
+  DynamicImage,
   DynamicPressable,
   DynamicText,
   DynamicTextInput,
@@ -16,7 +17,6 @@ import {
   KeyboardScroll,
 } from 'src/components';
 import {handleFormColor} from '../Onboarding/Onboarding';
-import {MaskedTextInput} from 'react-native-mask-text';
 
 type ProfileFormData = {
   firstName: string;
@@ -26,6 +26,25 @@ type ProfileFormData = {
 };
 
 const Profile = () => {
+  const [image, setImage] = useState<string | null>(null);
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+  console.log('image ', image);
+
   const {
     control,
     handleSubmit,
@@ -37,7 +56,7 @@ const Profile = () => {
       firstName: 'Phil Dominic',
       lastName: 'Baculio',
       email: 'gpbaculio@gmail.com',
-      phoneNumber: '09177335242',
+      phoneNumber: '15853042859',
     },
   });
   const [toggleCheck, setToggleCheck] = useState(false);
@@ -52,15 +71,26 @@ const Profile = () => {
             <DynamicText variant="profileLabel" color="#AFAFAF">
               Avatar
             </DynamicText>
-            <DynamicView
-              mt="xxs"
-              width={60}
-              height={60}
-              borderRadius={60}
-              bg="#57B87D"
-            />
+            {image ? (
+              <DynamicImage
+                source={{uri: image}}
+                mt="xxs"
+                width={60}
+                height={60}
+                borderRadius={60}
+              />
+            ) : (
+              <DynamicView
+                mt="xxs"
+                width={60}
+                height={60}
+                borderRadius={60}
+                bg="#57B87D"
+              />
+            )}
           </DynamicView>
           <DynamicPressable
+            onPress={pickImage}
             mt="xL"
             padding="xxs"
             borderRadius={8}
@@ -155,7 +185,7 @@ const Profile = () => {
               rules={{required: true}}
               render={({field: {onChange, onBlur, value}}) => (
                 <MaskedTextInput
-                  mask="(9999) 999-9999"
+                  mask="+1 (999) 999-9999"
                   style={{
                     borderWidth: 1,
                     paddingVertical: 4,
@@ -277,7 +307,7 @@ const resolver = yupResolver(
       .email('Invalid Email Address')
       .required('Email is required'),
     phoneNumber: Yup.string()
-      .phone('PH', true, 'Please enter a Valid Phone number')
+      .phone('US', true, 'Please enter a Valid Phone number')
       .required('Please enter a Valid Phone number'),
   }),
 );
