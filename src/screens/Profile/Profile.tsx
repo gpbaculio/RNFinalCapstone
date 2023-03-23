@@ -27,7 +27,8 @@ type ProfileFormData = {
 };
 
 const Profile = () => {
-  const {state, actions} = useAuthentication();
+  const {actions} = useAuthentication();
+  const [image, setImage] = useState<string | null>(null);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -41,7 +42,7 @@ const Profile = () => {
     console.log(result);
 
     if (!result.canceled) {
-      actions.setUser({image: result.assets[0].uri});
+      setImage(result.assets[0].uri);
     }
   };
 
@@ -60,7 +61,10 @@ const Profile = () => {
     },
   });
 
-  const [toggleCheck, setToggleCheck] = useState(false);
+  const [emailStatuses, setEmailStatuses] = useState(false);
+  const [passwordChanges, setPasswordChanges] = useState(false);
+  const [specialOffers, setSpecialOffers] = useState(false);
+  const [newsLetter, setNewsLetter] = useState(false);
 
   return (
     <KeyboardScroll>
@@ -73,11 +77,8 @@ const Profile = () => {
             <DynamicText variant="profileLabel" color="#AFAFAF">
               Avatar
             </DynamicText>
-            {state.user?.image ? (
-              <DynamicImage
-                source={{uri: state.user?.image}}
-                variant="profileImgSection"
-              />
+            {image ? (
+              <DynamicImage source={{uri: image}} variant="profileImgSection" />
             ) : (
               <DynamicView variant="profileImgSection" bg="#57B87D" />
             )}
@@ -211,9 +212,9 @@ const Profile = () => {
             marginVertical="xxxs"
             flexDirection="row"
             alignItems="center"
-            onPress={() => setToggleCheck(v => !v)}>
+            onPress={() => setEmailStatuses(v => !v)}>
             <Ionicons
-              name={toggleCheck ? 'ios-checkbox' : 'square-outline'}
+              name={emailStatuses ? 'ios-checkbox' : 'square-outline'}
               size={23}
               color="#495E57"
             />
@@ -223,9 +224,9 @@ const Profile = () => {
             marginVertical="xxxs"
             flexDirection="row"
             alignItems="center"
-            onPress={() => setToggleCheck(v => !v)}>
+            onPress={() => setPasswordChanges(v => !v)}>
             <Ionicons
-              name={toggleCheck ? 'ios-checkbox' : 'square-outline'}
+              name={passwordChanges ? 'ios-checkbox' : 'square-outline'}
               size={23}
               color="#495E57"
             />
@@ -235,9 +236,9 @@ const Profile = () => {
             marginVertical="xxxs"
             flexDirection="row"
             alignItems="center"
-            onPress={() => setToggleCheck(v => !v)}>
+            onPress={() => setSpecialOffers(v => !v)}>
             <Ionicons
-              name={toggleCheck ? 'ios-checkbox' : 'square-outline'}
+              name={specialOffers ? 'ios-checkbox' : 'square-outline'}
               size={23}
               color="#495E57"
             />
@@ -247,9 +248,9 @@ const Profile = () => {
             marginVertical="xxxs"
             flexDirection="row"
             alignItems="center"
-            onPress={() => setToggleCheck(v => !v)}>
+            onPress={() => setNewsLetter(v => !v)}>
             <Ionicons
-              name={toggleCheck ? 'ios-checkbox' : 'square-outline'}
+              name={newsLetter ? 'ios-checkbox' : 'square-outline'}
               size={23}
               color="#495E57"
             />
