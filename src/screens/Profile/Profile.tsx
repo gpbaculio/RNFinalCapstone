@@ -59,7 +59,9 @@ const Profile = () => {
       phoneNumber: '15853042859',
     },
   });
+
   const [toggleCheck, setToggleCheck] = useState(false);
+
   return (
     <KeyboardScroll>
       <DynamicView flex={1} padding="m">
@@ -74,19 +76,10 @@ const Profile = () => {
             {state.user?.image ? (
               <DynamicImage
                 source={{uri: state.user?.image}}
-                mt="xxs"
-                width={60}
-                height={60}
-                borderRadius={60}
+                variant="profileImgSection"
               />
             ) : (
-              <DynamicView
-                mt="xxs"
-                width={60}
-                height={60}
-                borderRadius={60}
-                bg="#57B87D"
-              />
+              <DynamicView variant="profileImgSection" bg="#57B87D" />
             )}
           </DynamicView>
           <DynamicPressable

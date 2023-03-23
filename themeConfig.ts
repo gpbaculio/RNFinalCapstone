@@ -1,5 +1,11 @@
 export const imageVariants = {
   defaults: {},
+  profileImgSection: {
+    mt: 'xxs',
+    width: 60,
+    height: 60,
+    borderRadius: 60,
+  },
 };
 
 export const colors = {
@@ -65,6 +71,12 @@ export const containerVariants = {
   center: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  profileImgSection: {
+    mt: 'xxs',
+    width: 60,
+    height: 60,
+    borderRadius: 60,
   },
 };
 
