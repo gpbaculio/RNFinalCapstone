@@ -18,7 +18,7 @@ const NativeStack = createNativeStackNavigator<NativeStackNavigatorParamList>();
 
 const Navigation = () => {
   const {state} = useAuthentication();
-  console.log('state.user ', JSON.stringify(state.user));
+
   return (
     <NativeStack.Navigator
       initialRouteName={state.user ? 'Home' : 'Onboarding'}>

@@ -16,6 +16,7 @@ import ProfileFormModal from './ProfileFormModal';
 import AvatarField from './AvatarField';
 import PersonalInformationFields from './PersonalInformationFields';
 import EmailNotificationFields from './EmailNotificationFields';
+import LogoutModal from './LogoutModal';
 import BottomSection from './BottomSection';
 
 import {useAuthentication} from 'src/store';
@@ -106,6 +107,16 @@ const Profile = () => {
 
   const onRemovePress = () => setValue('image', null, {shouldDirty: true});
 
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  const onLogoutPress = () => {
+    actions.setUser(null);
+  };
+
+  const hideLogoutModal = () => {
+    setShowLogoutModal(false);
+  };
+
   return (
     <KeyboardScroll>
       <ProfileFormModal
@@ -113,6 +124,11 @@ const Profile = () => {
         hasConfirmed={hasConfirmed}
         onConfirmPress={onConfirmPress}
         hideModal={hideModal}
+      />
+      <LogoutModal
+        onConfirmPress={onLogoutPress}
+        showConfirmModal={showLogoutModal}
+        hideModal={hideLogoutModal}
       />
       <DynamicView flex={1} padding="m">
         <DynamicText fontSize={18} fontWeight="bold">
@@ -127,6 +143,9 @@ const Profile = () => {
         <EmailNotificationFields control={control} />
         <DynamicPressable
           marginVertical="s"
+          onPress={() => {
+            setShowLogoutModal(true);
+          }}
           backgroundColor="#F4CE14"
           variant="button">
           <DynamicText fontWeight="bold">Log out</DynamicText>
