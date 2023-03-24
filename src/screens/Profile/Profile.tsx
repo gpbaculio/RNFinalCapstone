@@ -36,8 +36,6 @@ type ProfileFormData = {
 const Profile = () => {
   const {state, actions} = useAuthentication();
 
-  const [image, setImage] = useState<string | null>(null);
-
   // phone: 14844731597
   const defaultValues: ProfileFormData = {
     firstName: state.user?.firstName || '',
@@ -400,6 +398,9 @@ const Profile = () => {
         justifyContent="space-around">
         <DynamicPressable
           variant="button"
+          opacity={isDirty ? 1 : 0.5}
+          disabled={!isDirty}
+          onPress={() => reset(defaultValues)}
           borderWidth={1}
           borderColor="#495E57">
           <DynamicText fontWeight="bold" color="#AFAFAF">
