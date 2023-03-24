@@ -26,7 +26,9 @@ const HeaderLogo = () => {
           variant="center">
           <DynamicView width={19} variant="center">
             <DynamicText color="#FFFFFF" fontWeight="600">
-              {state.user?.firstName?.charAt(0)}
+              {`${state.user?.firstName?.charAt(0)} ${
+                state.user?.lastName?.charAt(0) || ''
+              }`.trim()}
             </DynamicText>
           </DynamicView>
         </DynamicView>
