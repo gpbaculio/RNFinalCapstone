@@ -10,7 +10,6 @@ import * as ImagePicker from 'expo-image-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import {
-  DynamicImage,
   DynamicPressable,
   DynamicText,
   DynamicTextInput,
@@ -22,6 +21,7 @@ import BottomSection from './BottomSection';
 import {handleFormColor} from '../Onboarding/Onboarding';
 import {useAuthentication} from 'src/store';
 import ProfileFormModal from './ProfileFormModal';
+import AvatarField from './AvatarField';
 
 export type ProfileFormData = {
   firstName: string;
@@ -104,6 +104,8 @@ const Profile = () => {
     setShowConfirmModal(false);
   };
 
+  const onRemovePress = () => setValue('image', null, {shouldDirty: true});
+
   return (
     <KeyboardScroll>
       <ProfileFormModal
@@ -116,47 +118,10 @@ const Profile = () => {
         <DynamicText fontSize={18} fontWeight="bold">
           Personal Information
         </DynamicText>
-        <Controller
+        <AvatarField
           control={control}
-          rules={{required: true}}
-          render={({field: {value}}) => (
-            <DynamicView mt="xxs" flexDirection="row" alignItems="center">
-              <DynamicView mr="l">
-                <DynamicText variant="profileLabel" color="#AFAFAF">
-                  Avatar
-                </DynamicText>
-                {value ? (
-                  <DynamicImage
-                    source={{uri: value}}
-                    variant="profileImgSection"
-                  />
-                ) : (
-                  <DynamicView variant="profileImgSection" bg="#57B87D" />
-                )}
-              </DynamicView>
-              <DynamicPressable
-                onPress={pickImage}
-                mt="xL"
-                padding="xxs"
-                borderRadius={8}
-                mr="l"
-                bg="#495E57">
-                <DynamicText color="#FFFFFF">Change</DynamicText>
-              </DynamicPressable>
-              <DynamicPressable
-                disabled={!value}
-                opacity={!value ? 0.5 : 1}
-                mt="xL"
-                padding="xxs"
-                onPress={() => setValue('image', null, {shouldDirty: true})}
-                borderRadius={8}
-                borderColor="#495E57"
-                borderWidth={1}>
-                <DynamicText color="#495E57">Remove</DynamicText>
-              </DynamicPressable>
-            </DynamicView>
-          )}
-          name="image"
+          pickImage={pickImage}
+          onRemovePress={onRemovePress}
         />
         <DynamicView>
           <DynamicView variant="center">
