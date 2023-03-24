@@ -19,6 +19,23 @@ const fetchData = async () => {
   return [...data.menu];
 };
 
+const menuData = [
+  {
+    name: 'Greek Salad',
+    price: 12.99,
+    description:
+      'Our delicious salad is served with Feta cheese and peeled cucumber. Includes tomatoes, onions, olives, salt and oregano in the ingredients.',
+    image: 'greekSalad.jpg',
+  },
+  {
+    name: 'Bruschetta',
+    price: 7.99,
+    description:
+      'Delicious grilled bread rubbed with garlic and topped with olive oil and salt. Our Bruschetta includes tomato and cheese.',
+    image: 'bruschetta.jpg',
+  },
+];
+
 const Home = () => {
   const [data, setData] = useState<SectionDataType[]>([]);
 
@@ -97,6 +114,46 @@ const Home = () => {
           <DynamicView height={1} backgroundColor="#D9D9D9" />
         </DynamicView>
       </DynamicView>
+      <FlatList
+        data={menuData}
+        contentContainerStyle={{padding: 16}}
+        ItemSeparatorComponent={() => (
+          <DynamicView
+            height={1}
+            backgroundColor="#D9D9D9"
+            marginVertical="xs"
+          />
+        )}
+        renderItem={({item}) => (
+          <DynamicView>
+            <DynamicText
+              fontSize={18}
+              mb="xxs"
+              color="#000000"
+              fontWeight="700">
+              {item.name}
+            </DynamicText>
+            <DynamicView flexDirection="row">
+              <DynamicView flex={1}>
+                <DynamicText fontWeight="400" fontSize={16} color="#495E57">
+                  {item.description}
+                </DynamicText>
+                <DynamicText fontWeight="500" fontSize={18} color="#495E57">
+                  ${item.price}
+                </DynamicText>
+              </DynamicView>
+              <DynamicImage
+                source={{
+                  uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${item.image}?raw=true`,
+                }}
+                ml="s"
+                width={83}
+                height={83}
+              />
+            </DynamicView>
+          </DynamicView>
+        )}
+      />
     </DynamicView>
   );
 };
