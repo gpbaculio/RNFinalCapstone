@@ -1,9 +1,12 @@
-import React from "react";
+import React from 'react';
 
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import { Home, Onboarding, Profile } from "src/screens";
-import Header from "src/screens/Onboarding/Header";
+import {Home, Onboarding, Profile} from 'src/screens';
+import OnboardingHeader from 'src/screens/Onboarding/Header';
+import ProfileHeader from 'src/screens/Profile/Header';
+import HomeHeader from 'src/screens/Home/Header';
+import {useAuthentication} from 'src/store';
 
 export type NativeStackNavigatorParamList = {
   Onboarding: undefined;
@@ -13,19 +16,36 @@ export type NativeStackNavigatorParamList = {
 
 const NativeStack = createNativeStackNavigator<NativeStackNavigatorParamList>();
 
-const options = {
-  header: () => <Header />,
+const Navigation = () => {
+  const {state} = useAuthentication();
+
+  return (
+    <NativeStack.Navigator
+      initialRouteName={state.user ? 'Home' : 'Onboarding'}>
+      {state.user ? (
+        <>
+          <NativeStack.Screen
+            name="Home"
+            component={Home}
+            options={{
+              header: () => <HomeHeader />,
+            }}
+          />
+          <NativeStack.Screen
+            name="Profile"
+            component={Profile}
+            options={{header: () => <ProfileHeader />}}
+          />
+        </>
+      ) : (
+        <NativeStack.Screen
+          options={{header: () => <OnboardingHeader />}}
+          name="Onboarding"
+          component={Onboarding}
+        />
+      )}
+    </NativeStack.Navigator>
+  );
 };
-const Navigation = () => (
-  <NativeStack.Navigator initialRouteName='Onboarding'>
-    <NativeStack.Screen
-      options={options}
-      name='Onboarding'
-      component={Onboarding}
-    />
-    <NativeStack.Screen name='Home' component={Home} />
-    <NativeStack.Screen name='Profile' component={Profile} />
-  </NativeStack.Navigator>
-);
 
 export default Navigation;

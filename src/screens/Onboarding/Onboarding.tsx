@@ -1,131 +1,146 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import React from "react";
-import { Controller, useForm } from "react-hook-form";
+import React from 'react';
+
+import {yupResolver} from '@hookform/resolvers/yup';
+import {Controller, useForm} from 'react-hook-form';
+import * as Yup from 'yup';
+
 import {
   DynamicView,
   DynamicText,
   DynamicTextInput,
   DynamicPressable,
-} from "src/components";
-import * as Yup from "yup";
+  KeyboardScroll,
+} from 'src/components';
 
-type OnboardingFormData = {
-  firstName: string;
-  email: string;
-};
+import {useRootNavigation} from 'src/navigation/hooks';
+import {useAuthentication} from 'src/store';
+
+type OnboardingFormData = {firstName: string; email: string};
 
 export const handleFormColor = (isError: boolean) =>
-  isError ? "red" : "#495E57";
+  isError ? 'red' : '#495E57';
 
 const Onboarding = () => {
+  const navigation = useRootNavigation();
+
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: {errors},
   } = useForm<OnboardingFormData>({
     resolver,
-    mode: "onChange",
+    mode: 'onChange',
+    defaultValues: {
+      firstName: 'sss',
+      email: 'as@gmail.com',
+    },
   });
 
   const hasErrors = !!Object.keys(errors).length;
-
-  const onSubmit = ({ firstName, email }: OnboardingFormData) => {
-    console.log("sss");
+  const {actions} = useAuthentication();
+  const onSubmit = ({firstName, email}: OnboardingFormData) => {
+    actions.setUser({firstName, email});
   };
 
   return (
-    <DynamicView flex={1}>
+    <KeyboardScroll>
       <DynamicView
         flex={1}
-        alignItems='center'
-        backgroundColor='#AFAFAF'
-        justifyContent='space-between'
-        paddingVertical='xL'>
-        <DynamicText mt='xxL' color='#495E57' fontWeight='600' fontSize={21}>
+        alignItems="center"
+        backgroundColor="#AFAFAF"
+        justifyContent="space-between"
+        paddingVertical="xL">
+        <DynamicText
+          mt="xxL"
+          mb="l"
+          color="#495E57"
+          fontWeight="600"
+          fontSize={21}>
           Let us get to know you
         </DynamicText>
-        <DynamicView width='100%'>
+        <DynamicView width="100%">
           <DynamicView
-            variant='center'
-            alignItems='center'
-            paddingHorizontal='xL'>
-            <DynamicText variant='formLabel'>First Name</DynamicText>
+            variant="center"
+            alignItems="center"
+            paddingHorizontal="xL">
+            <DynamicText variant="formLabel">First Name</DynamicText>
             <Controller
               control={control}
-              rules={{ required: true }}
-              render={({ field: { onChange, onBlur, value } }) => (
+              rules={{required: true}}
+              render={({field: {onChange, onBlur, value}}) => (
                 <DynamicTextInput
                   color={handleFormColor(!!errors.firstName)}
                   borderColor={handleFormColor(!!errors.firstName)}
-                  variant='input'
-                  placeholder='First Name'
+                  variant="input"
+                  placeholder="First Name"
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
                 />
               )}
-              name='firstName'
+              name="firstName"
             />
             {!!errors.firstName ? (
-              <DynamicText variant='error'>
+              <DynamicText variant="error">
                 {errors.firstName.message}
               </DynamicText>
             ) : null}
           </DynamicView>
           <DynamicView
-            variant='center'
-            alignItems='center'
-            width='100%'
-            paddingHorizontal='xL'>
-            <DynamicText variant='formLabel'>Email</DynamicText>
+            mt="l"
+            variant="center"
+            alignItems="center"
+            width="100%"
+            paddingHorizontal="xL">
+            <DynamicText variant="formLabel">Email</DynamicText>
             <Controller
               control={control}
-              rules={{ required: true }}
-              render={({ field: { onChange, onBlur, value } }) => (
+              rules={{required: true}}
+              render={({field: {onChange, onBlur, value}}) => (
                 <DynamicTextInput
                   color={handleFormColor(!!errors.email)}
                   borderColor={handleFormColor(!!errors.email)}
-                  variant='input'
-                  placeholder='Email'
+                  variant="input"
+                  placeholder="Email"
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
                 />
               )}
-              name='email'
+              name="email"
             />
             {!!errors.email ? (
-              <DynamicText variant='error'>{errors.email.message}</DynamicText>
+              <DynamicText variant="error">{errors.email.message}</DynamicText>
             ) : null}
           </DynamicView>
         </DynamicView>
       </DynamicView>
-      <DynamicView paddingVertical='xxL'>
+      <DynamicView paddingVertical="xxL">
         <DynamicPressable
           disabled={hasErrors}
           opacity={hasErrors ? 0.5 : 1}
           onPress={handleSubmit(onSubmit)}
-          ml='auto'
+          ml="auto"
           width={150}
-          variant='button'
-          backgroundColor='#AFAFAF'
-          mr='xL'>
-          <DynamicText color='#495E57' fontWeight='500'>
+          variant="button"
+          backgroundColor="#AFAFAF"
+          mr="xL">
+          <DynamicText color="#495E57" fontWeight="500">
             Next
           </DynamicText>
         </DynamicPressable>
       </DynamicView>
-    </DynamicView>
+    </KeyboardScroll>
   );
 };
 
 const resolver = yupResolver(
   Yup.object({
-    firstName: Yup.string().required("First Name is required"),
+    firstName: Yup.string().required('First Name is required'),
     email: Yup.string()
-      .email("Invalid Email Address")
-      .required("Email is required"),
-  })
+      .email('Invalid Email Address')
+      .required('Email is required'),
+  }),
 );
 
 export default Onboarding;
