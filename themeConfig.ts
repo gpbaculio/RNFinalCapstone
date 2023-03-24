@@ -79,6 +79,12 @@ export const containerVariants = {
     height: 60,
     borderRadius: 60,
   },
+  orderPill: {
+    paddingHorizontal: 's',
+    paddingVertical: 'xs',
+    borderRadius: 16,
+    backgroundColor: '#D9D9D9',
+  },
 };
 
 export const textVariants = {
@@ -128,5 +134,9 @@ export const textVariants = {
   profileLabel: {
     fontWeight: '600',
     fontSize: 14,
+  },
+  orderPill: {
+    color: '#495E57',
+    fontWeight: '500',
   },
 };
