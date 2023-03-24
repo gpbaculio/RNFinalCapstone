@@ -25,6 +25,7 @@ export const colors = {
   '#AFAFAF': '#AFAFAF',
   red: 'red',
   '#57B87D': '#57B87D',
+  overlay: 'rgba(0,0,0,0.5)',
 };
 
 export const spacing = {

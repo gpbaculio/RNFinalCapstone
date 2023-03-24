@@ -18,16 +18,23 @@ import {
 } from 'src/components';
 import {handleFormColor} from '../Onboarding/Onboarding';
 import {useAuthentication} from 'src/store';
+import {Modal, StyleSheet} from 'react-native';
+import isEqual from 'lodash.isequal';
 
 type ProfileFormData = {
   firstName: string;
   lastName: string;
   email: string;
   phoneNumber: string;
+  emailStatuses: boolean;
+  passwordChanges: boolean;
+  specialOffers: boolean;
+  newsLetter: boolean;
 };
 
 const Profile = () => {
-  const {actions} = useAuthentication();
+  const {state, actions} = useAuthentication();
+
   const [image, setImage] = useState<string | null>(null);
 
   const pickImage = async () => {
@@ -45,29 +52,109 @@ const Profile = () => {
       setImage(result.assets[0].uri);
     }
   };
+  // phone: 14844731597
+  const defaultValues: ProfileFormData = {
+    firstName: state.user?.firstName || '',
+    lastName: state.user?.lastName || '',
+    email: state.user?.email || '',
+    phoneNumber: state.user?.phoneNumber || '',
+    emailStatuses: !!state.user?.emailStatuses,
+    passwordChanges: !!state.user?.passwordChanges,
+    specialOffers: !!state.user?.specialOffers,
+    newsLetter: !!state.user?.newsLetter,
+  };
+
+  const formKeys = Object.keys(defaultValues);
 
   const {
     control,
     handleSubmit,
-    formState: {errors},
+    formState: {errors, isDirty},
+    trigger,
   } = useForm<ProfileFormData>({
     resolver,
-    mode: 'onChange',
-    defaultValues: {
-      firstName: 'Phil Dominic',
-      lastName: 'Baculio',
-      email: 'gpbaculio@gmail.com',
-      phoneNumber: '15853042859',
-    },
+    defaultValues,
+    mode: 'onTouched',
+    reValidateMode: 'onChange',
   });
 
-  const [emailStatuses, setEmailStatuses] = useState(false);
-  const [passwordChanges, setPasswordChanges] = useState(false);
-  const [specialOffers, setSpecialOffers] = useState(false);
-  const [newsLetter, setNewsLetter] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [hasConfirmed, setHasConfirmed] = useState(false);
+
+  const onConfirm = (data: ProfileFormData) => {
+    actions.setUser({...data});
+    setHasConfirmed(true);
+  };
+
+  const onSubmit = async () => {
+    const result = await trigger(formKeys as Array<keyof ProfileFormData>);
+
+    if (result) {
+      setShowConfirmModal(true);
+    }
+  };
 
   return (
     <KeyboardScroll>
+      <Modal visible={showConfirmModal} transparent>
+        <DynamicView flex={1} variant="center" bg="overlay">
+          <DynamicView
+            elevation={3}
+            backgroundColor="#FFFFFF"
+            borderRadius={8}
+            variant="center"
+            p="l">
+            <DynamicText fontSize={21} fontWeight="900" color="#495E57">
+              {!hasConfirmed ? 'Confirm' : 'Success'}
+            </DynamicText>
+            <DynamicText fontWeight="500" mt="m">
+              {!hasConfirmed
+                ? 'Please Confirm to Save Changes'
+                : 'Changes Successfully Saved'}
+            </DynamicText>
+            {!hasConfirmed ? (
+              <DynamicView flexDirection="row" alignItems="center">
+                <DynamicPressable
+                  onPress={handleSubmit(onConfirm)}
+                  mr="l"
+                  bg="#495E57"
+                  p="s"
+                  mt="m"
+                  borderRadius={8}>
+                  <DynamicText color="#FFFFFF" fontWeight="500">
+                    Confirm
+                  </DynamicText>
+                </DynamicPressable>
+                <DynamicPressable
+                  onPress={() => {
+                    setShowConfirmModal(false);
+                  }}
+                  backgroundColor="#D9D9D9"
+                  p="s"
+                  mt="m"
+                  borderRadius={8}>
+                  <DynamicText color="#495E57" fontWeight="500">
+                    Go back
+                  </DynamicText>
+                </DynamicPressable>
+              </DynamicView>
+            ) : (
+              <DynamicPressable
+                onPress={() => {
+                  setShowConfirmModal(false);
+                }}
+                backgroundColor="#495E57"
+                p="s"
+                mt="m"
+                borderRadius={8}>
+                <DynamicText color="#D9D9D9" fontWeight="500">
+                  Close
+                </DynamicText>
+              </DynamicPressable>
+            )}
+          </DynamicView>
+        </DynamicView>
+      </Modal>
       <DynamicView flex={1} padding="m">
         <DynamicText fontSize={18} fontWeight="bold">
           Personal Information
@@ -181,18 +268,15 @@ const Profile = () => {
                 <MaskedTextInput
                   mask="+1 (999) 999-9999"
                   style={{
-                    borderWidth: 1,
-                    paddingVertical: 4,
-                    width: '100%',
-                    paddingHorizontal: 8,
-                    borderRadius: 8,
+                    ...styles.phoneInput,
                     color: handleFormColor(!!errors.phoneNumber),
                     borderColor: handleFormColor(!!errors.phoneNumber),
                   }}
                   placeholder="Phone number"
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={(_, rawText) => onChange(rawText)}
                   value={value}
+                  keyboardType="number-pad"
                 />
               )}
               name="phoneNumber"
@@ -208,54 +292,82 @@ const Profile = () => {
           Email Notifications
         </DynamicText>
         <DynamicView>
-          <DynamicPressable
-            marginVertical="xxxs"
-            flexDirection="row"
-            alignItems="center"
-            onPress={() => setEmailStatuses(v => !v)}>
-            <Ionicons
-              name={emailStatuses ? 'ios-checkbox' : 'square-outline'}
-              size={23}
-              color="#495E57"
-            />
-            <DynamicText ml="xs">Order statuses</DynamicText>
-          </DynamicPressable>
-          <DynamicPressable
-            marginVertical="xxxs"
-            flexDirection="row"
-            alignItems="center"
-            onPress={() => setPasswordChanges(v => !v)}>
-            <Ionicons
-              name={passwordChanges ? 'ios-checkbox' : 'square-outline'}
-              size={23}
-              color="#495E57"
-            />
-            <DynamicText ml="xs">Order statuses</DynamicText>
-          </DynamicPressable>
-          <DynamicPressable
-            marginVertical="xxxs"
-            flexDirection="row"
-            alignItems="center"
-            onPress={() => setSpecialOffers(v => !v)}>
-            <Ionicons
-              name={specialOffers ? 'ios-checkbox' : 'square-outline'}
-              size={23}
-              color="#495E57"
-            />
-            <DynamicText ml="xs">Order statuses</DynamicText>
-          </DynamicPressable>
-          <DynamicPressable
-            marginVertical="xxxs"
-            flexDirection="row"
-            alignItems="center"
-            onPress={() => setNewsLetter(v => !v)}>
-            <Ionicons
-              name={newsLetter ? 'ios-checkbox' : 'square-outline'}
-              size={23}
-              color="#495E57"
-            />
-            <DynamicText ml="xs">Order statuses</DynamicText>
-          </DynamicPressable>
+          <Controller
+            control={control}
+            rules={{required: true}}
+            render={({field: {onChange, value}}) => (
+              <DynamicPressable
+                marginVertical="xxxs"
+                flexDirection="row"
+                alignItems="center"
+                onPress={() => onChange(!value)}>
+                <Ionicons
+                  name={value ? 'ios-checkbox' : 'square-outline'}
+                  size={23}
+                  color="#495E57"
+                />
+                <DynamicText ml="xs">Email statuses</DynamicText>
+              </DynamicPressable>
+            )}
+            name="emailStatuses"
+          />
+          <Controller
+            control={control}
+            rules={{required: true}}
+            render={({field: {onChange, value}}) => (
+              <DynamicPressable
+                marginVertical="xxxs"
+                flexDirection="row"
+                alignItems="center"
+                onPress={() => onChange(!value)}>
+                <Ionicons
+                  name={value ? 'ios-checkbox' : 'square-outline'}
+                  size={23}
+                  color="#495E57"
+                />
+                <DynamicText ml="xs">Password Changes</DynamicText>
+              </DynamicPressable>
+            )}
+            name="passwordChanges"
+          />
+          <Controller
+            control={control}
+            rules={{required: true}}
+            render={({field: {onChange, value}}) => (
+              <DynamicPressable
+                marginVertical="xxxs"
+                flexDirection="row"
+                alignItems="center"
+                onPress={() => onChange(!value)}>
+                <Ionicons
+                  name={value ? 'ios-checkbox' : 'square-outline'}
+                  size={23}
+                  color="#495E57"
+                />
+                <DynamicText ml="xs">Special Offers</DynamicText>
+              </DynamicPressable>
+            )}
+            name="specialOffers"
+          />
+          <Controller
+            control={control}
+            rules={{required: true}}
+            render={({field: {onChange, value}}) => (
+              <DynamicPressable
+                marginVertical="xxxs"
+                flexDirection="row"
+                alignItems="center"
+                onPress={() => onChange(!value)}>
+                <Ionicons
+                  name={value ? 'ios-checkbox' : 'square-outline'}
+                  size={23}
+                  color="#495E57"
+                />
+                <DynamicText ml="xs">Newsletter</DynamicText>
+              </DynamicPressable>
+            )}
+            name="newsLetter"
+          />
         </DynamicView>
         <DynamicPressable
           marginVertical="s"
@@ -274,12 +386,17 @@ const Profile = () => {
           borderWidth={1}
           borderColor="#495E57">
           <DynamicText fontWeight="bold" color="#AFAFAF">
-            Log out
+            Discard Changes
           </DynamicText>
         </DynamicPressable>
-        <DynamicPressable variant="button" backgroundColor="#495E57">
+        <DynamicPressable
+          onPress={onSubmit}
+          opacity={isDirty ? 1 : 0.5}
+          disabled={!isDirty}
+          variant="button"
+          backgroundColor="#495E57">
           <DynamicText fontWeight="bold" color="#FFFFFF">
-            Log out
+            Save Changes
           </DynamicText>
         </DynamicPressable>
       </DynamicView>
@@ -288,6 +405,16 @@ const Profile = () => {
 };
 
 export default Profile;
+
+const styles = StyleSheet.create({
+  phoneInput: {
+    borderWidth: 1,
+    paddingVertical: 4,
+    width: '100%',
+    paddingHorizontal: 8,
+    borderRadius: 8,
+  },
+});
 
 const resolver = yupResolver(
   Yup.object({
@@ -301,7 +428,7 @@ const resolver = yupResolver(
       .email('Invalid Email Address')
       .required('Email is required'),
     phoneNumber: Yup.string()
-      .phone('US', true, 'Please enter a Valid Phone number')
-      .required('Please enter a Valid Phone number'),
+      .required('Please enter a Valid US Phone number')
+      .phone('US', true, 'Please enter a Valid US Phone number'),
   }),
 );

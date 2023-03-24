@@ -5,7 +5,11 @@ export type UserType = {
   lastName?: string;
   image?: string | null;
   email?: string;
-  phone?: string;
+  phoneNumber?: string;
+  emailStatuses?: boolean;
+  passwordChanges?: boolean;
+  specialOffers?: boolean;
+  newsLetter?: boolean;
 };
 
 export type AuthenticationStateType = {
