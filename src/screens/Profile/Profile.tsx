@@ -6,8 +6,9 @@ import * as Yup from 'yup';
 import {MaskedTextInput} from 'react-native-mask-text';
 import 'yup-phone';
 import * as ImagePicker from 'expo-image-picker';
-
+import {Modal, StyleSheet} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+
 import {
   DynamicImage,
   DynamicPressable,
@@ -16,10 +17,9 @@ import {
   DynamicView,
   KeyboardScroll,
 } from 'src/components';
+
 import {handleFormColor} from '../Onboarding/Onboarding';
 import {useAuthentication} from 'src/store';
-import {Modal, StyleSheet} from 'react-native';
-import isEqual from 'lodash.isequal';
 
 type ProfileFormData = {
   firstName: string;
@@ -30,6 +30,7 @@ type ProfileFormData = {
   passwordChanges: boolean;
   specialOffers: boolean;
   newsLetter: boolean;
+  image: string | null;
 };
 
 const Profile = () => {
@@ -37,21 +38,6 @@ const Profile = () => {
 
   const [image, setImage] = useState<string | null>(null);
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
   // phone: 14844731597
   const defaultValues: ProfileFormData = {
     firstName: state.user?.firstName || '',
@@ -62,6 +48,7 @@ const Profile = () => {
     passwordChanges: !!state.user?.passwordChanges,
     specialOffers: !!state.user?.specialOffers,
     newsLetter: !!state.user?.newsLetter,
+    image: state.user?.image || '',
   };
 
   const formKeys = Object.keys(defaultValues);
@@ -71,6 +58,8 @@ const Profile = () => {
     handleSubmit,
     formState: {errors, isDirty},
     trigger,
+    setValue,
+    reset,
   } = useForm<ProfileFormData>({
     resolver,
     defaultValues,
@@ -78,11 +67,26 @@ const Profile = () => {
     reValidateMode: 'onChange',
   });
 
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setValue('image', result.assets[0].uri, {shouldDirty: true});
+    }
+  };
+
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [hasConfirmed, setHasConfirmed] = useState(false);
 
   const onConfirm = (data: ProfileFormData) => {
     actions.setUser({...data});
+    reset(data);
     setHasConfirmed(true);
   };
 
@@ -159,35 +163,48 @@ const Profile = () => {
         <DynamicText fontSize={18} fontWeight="bold">
           Personal Information
         </DynamicText>
-        <DynamicView mt="xxs" flexDirection="row" alignItems="center">
-          <DynamicView mr="l">
-            <DynamicText variant="profileLabel" color="#AFAFAF">
-              Avatar
-            </DynamicText>
-            {image ? (
-              <DynamicImage source={{uri: image}} variant="profileImgSection" />
-            ) : (
-              <DynamicView variant="profileImgSection" bg="#57B87D" />
-            )}
-          </DynamicView>
-          <DynamicPressable
-            onPress={pickImage}
-            mt="xL"
-            padding="xxs"
-            borderRadius={8}
-            mr="l"
-            bg="#495E57">
-            <DynamicText color="#FFFFFF">Change</DynamicText>
-          </DynamicPressable>
-          <DynamicPressable
-            mt="xL"
-            padding="xxs"
-            borderRadius={8}
-            borderColor="#495E57"
-            borderWidth={1}>
-            <DynamicText color="#495E57">Remove</DynamicText>
-          </DynamicPressable>
-        </DynamicView>
+        <Controller
+          control={control}
+          rules={{required: true}}
+          render={({field: {value}}) => (
+            <DynamicView mt="xxs" flexDirection="row" alignItems="center">
+              <DynamicView mr="l">
+                <DynamicText variant="profileLabel" color="#AFAFAF">
+                  Avatar
+                </DynamicText>
+                {value ? (
+                  <DynamicImage
+                    source={{uri: value}}
+                    variant="profileImgSection"
+                  />
+                ) : (
+                  <DynamicView variant="profileImgSection" bg="#57B87D" />
+                )}
+              </DynamicView>
+              <DynamicPressable
+                onPress={pickImage}
+                mt="xL"
+                padding="xxs"
+                borderRadius={8}
+                mr="l"
+                bg="#495E57">
+                <DynamicText color="#FFFFFF">Change</DynamicText>
+              </DynamicPressable>
+              <DynamicPressable
+                disabled={!value}
+                opacity={!value ? 0.5 : 1}
+                mt="xL"
+                padding="xxs"
+                onPress={() => setValue('image', null, {shouldDirty: true})}
+                borderRadius={8}
+                borderColor="#495E57"
+                borderWidth={1}>
+                <DynamicText color="#495E57">Remove</DynamicText>
+              </DynamicPressable>
+            </DynamicView>
+          )}
+          name="image"
+        />
         <DynamicView>
           <DynamicView variant="center">
             <DynamicText variant="profileInputLabel">First Name</DynamicText>
@@ -306,7 +323,7 @@ const Profile = () => {
                   size={23}
                   color="#495E57"
                 />
-                <DynamicText ml="xs">Email statuses</DynamicText>
+                <DynamicText ml="xs">Email Statuses</DynamicText>
               </DynamicPressable>
             )}
             name="emailStatuses"
@@ -430,5 +447,10 @@ const resolver = yupResolver(
     phoneNumber: Yup.string()
       .required('Please enter a Valid US Phone number')
       .phone('US', true, 'Please enter a Valid US Phone number'),
+    image: Yup.string().nullable(),
+    emailStatuses: Yup.boolean(),
+    passwordChanges: Yup.boolean(),
+    specialOffers: Yup.boolean(),
+    newsLetter: Yup.boolean(),
   }),
 );
