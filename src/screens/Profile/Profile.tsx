@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {StyleSheet} from 'react-native';
 
 import {Controller, useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
@@ -6,7 +7,6 @@ import * as Yup from 'yup';
 import {MaskedTextInput} from 'react-native-mask-text';
 import 'yup-phone';
 import * as ImagePicker from 'expo-image-picker';
-import {Modal, StyleSheet} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import {
@@ -17,11 +17,13 @@ import {
   DynamicView,
   KeyboardScroll,
 } from 'src/components';
+import BottomSection from './BottomSection';
 
 import {handleFormColor} from '../Onboarding/Onboarding';
 import {useAuthentication} from 'src/store';
+import ProfileFormModal from './ProfileFormModal';
 
-type ProfileFormData = {
+export type ProfileFormData = {
   firstName: string;
   lastName: string;
   email: string;
@@ -96,67 +98,20 @@ const Profile = () => {
     }
   };
 
+  const onConfirmPress = handleSubmit(onConfirm);
+
+  const hideModal = () => {
+    setShowConfirmModal(false);
+  };
+
   return (
     <KeyboardScroll>
-      <Modal visible={showConfirmModal} transparent>
-        <DynamicView flex={1} variant="center" bg="overlay">
-          <DynamicView
-            elevation={3}
-            backgroundColor="#FFFFFF"
-            borderRadius={8}
-            variant="center"
-            p="l">
-            <DynamicText fontSize={21} fontWeight="900" color="#495E57">
-              {!hasConfirmed ? 'Confirm' : 'Success'}
-            </DynamicText>
-            <DynamicText fontWeight="500" mt="m">
-              {!hasConfirmed
-                ? 'Please Confirm to Save Changes'
-                : 'Changes Successfully Saved'}
-            </DynamicText>
-            {!hasConfirmed ? (
-              <DynamicView flexDirection="row" alignItems="center">
-                <DynamicPressable
-                  onPress={handleSubmit(onConfirm)}
-                  mr="l"
-                  bg="#495E57"
-                  p="s"
-                  mt="m"
-                  borderRadius={8}>
-                  <DynamicText color="#FFFFFF" fontWeight="500">
-                    Confirm
-                  </DynamicText>
-                </DynamicPressable>
-                <DynamicPressable
-                  onPress={() => {
-                    setShowConfirmModal(false);
-                  }}
-                  backgroundColor="#D9D9D9"
-                  p="s"
-                  mt="m"
-                  borderRadius={8}>
-                  <DynamicText color="#495E57" fontWeight="500">
-                    Go back
-                  </DynamicText>
-                </DynamicPressable>
-              </DynamicView>
-            ) : (
-              <DynamicPressable
-                onPress={() => {
-                  setShowConfirmModal(false);
-                }}
-                backgroundColor="#495E57"
-                p="s"
-                mt="m"
-                borderRadius={8}>
-                <DynamicText color="#D9D9D9" fontWeight="500">
-                  Close
-                </DynamicText>
-              </DynamicPressable>
-            )}
-          </DynamicView>
-        </DynamicView>
-      </Modal>
+      <ProfileFormModal
+        showConfirmModal={showConfirmModal}
+        hasConfirmed={hasConfirmed}
+        onConfirmPress={onConfirmPress}
+        hideModal={hideModal}
+      />
       <DynamicView flex={1} padding="m">
         <DynamicText fontSize={18} fontWeight="bold">
           Personal Information
@@ -391,33 +346,12 @@ const Profile = () => {
           <DynamicText fontWeight="bold">Log out</DynamicText>
         </DynamicPressable>
       </DynamicView>
-      <DynamicView
-        mb="xxL"
-        flexDirection="row"
-        alignItems="center"
-        justifyContent="space-around">
-        <DynamicPressable
-          variant="button"
-          opacity={isDirty ? 1 : 0.5}
-          disabled={!isDirty}
-          onPress={() => reset(defaultValues)}
-          borderWidth={1}
-          borderColor="#495E57">
-          <DynamicText fontWeight="bold" color="#AFAFAF">
-            Discard Changes
-          </DynamicText>
-        </DynamicPressable>
-        <DynamicPressable
-          onPress={onSubmit}
-          opacity={isDirty ? 1 : 0.5}
-          disabled={!isDirty}
-          variant="button"
-          backgroundColor="#495E57">
-          <DynamicText fontWeight="bold" color="#FFFFFF">
-            Save Changes
-          </DynamicText>
-        </DynamicPressable>
-      </DynamicView>
+      <BottomSection
+        defaultValues={defaultValues}
+        reset={reset}
+        onSubmit={onSubmit}
+        isDirty={isDirty}
+      />
     </KeyboardScroll>
   );
 };
