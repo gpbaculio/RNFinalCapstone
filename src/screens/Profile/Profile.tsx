@@ -1,28 +1,24 @@
 import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
 
-import {Controller, useForm} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import {MaskedTextInput} from 'react-native-mask-text';
 import 'yup-phone';
 import * as ImagePicker from 'expo-image-picker';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 import {
   DynamicPressable,
   DynamicText,
-  DynamicTextInput,
   DynamicView,
   KeyboardScroll,
 } from 'src/components';
-import BottomSection from './BottomSection';
-
-import {handleFormColor} from '../Onboarding/Onboarding';
-import {useAuthentication} from 'src/store';
 import ProfileFormModal from './ProfileFormModal';
 import AvatarField from './AvatarField';
+import PersonalInformationFields from './PersonalInformationFields';
 import EmailNotificationFields from './EmailNotificationFields';
+import BottomSection from './BottomSection';
+
+import {useAuthentication} from 'src/store';
 
 export type ProfileFormData = {
   firstName: string;
@@ -127,106 +123,7 @@ const Profile = () => {
           pickImage={pickImage}
           onRemovePress={onRemovePress}
         />
-        <DynamicView>
-          <DynamicView variant="center">
-            <DynamicText variant="profileInputLabel">First Name</DynamicText>
-            <Controller
-              control={control}
-              rules={{required: true}}
-              render={({field: {onChange, onBlur, value}}) => (
-                <DynamicTextInput
-                  color={handleFormColor(!!errors.firstName)}
-                  borderColor={handleFormColor(!!errors.firstName)}
-                  variant="profileInput"
-                  placeholder="First Name"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-              name="firstName"
-            />
-            {!!errors.firstName ? (
-              <DynamicText variant="error">
-                {errors.firstName.message}
-              </DynamicText>
-            ) : null}
-          </DynamicView>
-          <DynamicView variant="center">
-            <DynamicText variant="profileInputLabel">Last Name</DynamicText>
-            <Controller
-              control={control}
-              rules={{required: true}}
-              render={({field: {onChange, onBlur, value}}) => (
-                <DynamicTextInput
-                  color={handleFormColor(!!errors.lastName)}
-                  borderColor={handleFormColor(!!errors.lastName)}
-                  variant="profileInput"
-                  placeholder="Last Name"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-              name="lastName"
-            />
-            {!!errors.lastName ? (
-              <DynamicText variant="error">
-                {errors.lastName.message}
-              </DynamicText>
-            ) : null}
-          </DynamicView>
-          <DynamicView variant="center">
-            <DynamicText variant="profileInputLabel">Email</DynamicText>
-            <Controller
-              control={control}
-              rules={{required: true}}
-              render={({field: {onChange, onBlur, value}}) => (
-                <DynamicTextInput
-                  color={handleFormColor(!!errors.email)}
-                  borderColor={handleFormColor(!!errors.email)}
-                  variant="profileInput"
-                  placeholder="Email"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-              name="email"
-            />
-            {!!errors.email ? (
-              <DynamicText variant="error">{errors.email.message}</DynamicText>
-            ) : null}
-          </DynamicView>
-          <DynamicView variant="center">
-            <DynamicText variant="profileInputLabel">Phone number</DynamicText>
-            <Controller
-              control={control}
-              rules={{required: true}}
-              render={({field: {onChange, onBlur, value}}) => (
-                <MaskedTextInput
-                  mask="+1 (999) 999-9999"
-                  style={{
-                    ...styles.phoneInput,
-                    color: handleFormColor(!!errors.phoneNumber),
-                    borderColor: handleFormColor(!!errors.phoneNumber),
-                  }}
-                  placeholder="Phone number"
-                  onBlur={onBlur}
-                  onChangeText={(_, rawText) => onChange(rawText)}
-                  value={value}
-                  keyboardType="number-pad"
-                />
-              )}
-              name="phoneNumber"
-            />
-            {!!errors.phoneNumber ? (
-              <DynamicText variant="error">
-                {errors.phoneNumber.message}
-              </DynamicText>
-            ) : null}
-          </DynamicView>
-        </DynamicView>
+        <PersonalInformationFields control={control} errors={errors} />
         <EmailNotificationFields control={control} />
         <DynamicPressable
           marginVertical="s"
@@ -246,16 +143,6 @@ const Profile = () => {
 };
 
 export default Profile;
-
-const styles = StyleSheet.create({
-  phoneInput: {
-    borderWidth: 1,
-    paddingVertical: 4,
-    width: '100%',
-    paddingHorizontal: 8,
-    borderRadius: 8,
-  },
-});
 
 const resolver = yupResolver(
   Yup.object({
