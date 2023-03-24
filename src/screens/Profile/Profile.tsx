@@ -22,6 +22,7 @@ import {handleFormColor} from '../Onboarding/Onboarding';
 import {useAuthentication} from 'src/store';
 import ProfileFormModal from './ProfileFormModal';
 import AvatarField from './AvatarField';
+import EmailNotificationFields from './EmailNotificationFields';
 
 export type ProfileFormData = {
   firstName: string;
@@ -101,6 +102,9 @@ const Profile = () => {
   const onConfirmPress = handleSubmit(onConfirm);
 
   const hideModal = () => {
+    if (hasConfirmed) {
+      setHasConfirmed(false);
+    }
     setShowConfirmModal(false);
   };
 
@@ -223,87 +227,7 @@ const Profile = () => {
             ) : null}
           </DynamicView>
         </DynamicView>
-        <DynamicText mt="m" fontSize={18} fontWeight="bold">
-          Email Notifications
-        </DynamicText>
-        <DynamicView>
-          <Controller
-            control={control}
-            rules={{required: true}}
-            render={({field: {onChange, value}}) => (
-              <DynamicPressable
-                marginVertical="xxxs"
-                flexDirection="row"
-                alignItems="center"
-                onPress={() => onChange(!value)}>
-                <Ionicons
-                  name={value ? 'ios-checkbox' : 'square-outline'}
-                  size={23}
-                  color="#495E57"
-                />
-                <DynamicText ml="xs">Email Statuses</DynamicText>
-              </DynamicPressable>
-            )}
-            name="emailStatuses"
-          />
-          <Controller
-            control={control}
-            rules={{required: true}}
-            render={({field: {onChange, value}}) => (
-              <DynamicPressable
-                marginVertical="xxxs"
-                flexDirection="row"
-                alignItems="center"
-                onPress={() => onChange(!value)}>
-                <Ionicons
-                  name={value ? 'ios-checkbox' : 'square-outline'}
-                  size={23}
-                  color="#495E57"
-                />
-                <DynamicText ml="xs">Password Changes</DynamicText>
-              </DynamicPressable>
-            )}
-            name="passwordChanges"
-          />
-          <Controller
-            control={control}
-            rules={{required: true}}
-            render={({field: {onChange, value}}) => (
-              <DynamicPressable
-                marginVertical="xxxs"
-                flexDirection="row"
-                alignItems="center"
-                onPress={() => onChange(!value)}>
-                <Ionicons
-                  name={value ? 'ios-checkbox' : 'square-outline'}
-                  size={23}
-                  color="#495E57"
-                />
-                <DynamicText ml="xs">Special Offers</DynamicText>
-              </DynamicPressable>
-            )}
-            name="specialOffers"
-          />
-          <Controller
-            control={control}
-            rules={{required: true}}
-            render={({field: {onChange, value}}) => (
-              <DynamicPressable
-                marginVertical="xxxs"
-                flexDirection="row"
-                alignItems="center"
-                onPress={() => onChange(!value)}>
-                <Ionicons
-                  name={value ? 'ios-checkbox' : 'square-outline'}
-                  size={23}
-                  color="#495E57"
-                />
-                <DynamicText ml="xs">Newsletter</DynamicText>
-              </DynamicPressable>
-            )}
-            name="newsLetter"
-          />
-        </DynamicView>
+        <EmailNotificationFields control={control} />
         <DynamicPressable
           marginVertical="s"
           backgroundColor="#F4CE14"
