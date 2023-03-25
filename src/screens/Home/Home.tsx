@@ -65,6 +65,11 @@ const Home = () => {
     <MenuItem item={item} />
   );
 
+  const categories = menu.map(({category}) => category);
+  const categoriesData = categories.filter(
+    (item, pos) => categories.indexOf(item) === pos,
+  );
+
   return (
     <FlatList
       nestedScrollEnabled
@@ -116,7 +121,7 @@ const Home = () => {
               showsHorizontalScrollIndicator={false}
               horizontal
               contentContainerStyle={{paddingLeft: 16}}
-              data={pills}
+              data={categoriesData}
               ItemSeparatorComponent={() => <DynamicView width={10} />}
               renderItem={({item}) => (
                 <DynamicView variant="orderPill">
