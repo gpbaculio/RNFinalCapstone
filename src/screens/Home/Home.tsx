@@ -15,15 +15,9 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import debounce from 'lodash.debounce';
 
-import {
-  DynamicImage,
-  DynamicText,
-  DynamicTextInput,
-  DynamicView,
-} from 'src/components';
+import {DynamicText, DynamicView} from 'src/components';
 import CategoryFilter from './CategoryFilter';
 import MenuItem from './MenuItem';
 
@@ -34,7 +28,7 @@ import {
   saveMenuItems,
 } from './database';
 
-import {homeImg} from 'assets';
+import TopSection from './TopSection';
 
 const API_URL =
   'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json';
@@ -75,6 +69,8 @@ const Footer = ({isLoading}: FooterProps) => {
   return null;
 };
 
+const CategorySeparator = () => <DynamicView width={10} />;
+
 export function useUpdateEffect(
   effect: EffectCallback,
   dependencies: DependencyList = [],
@@ -89,6 +85,34 @@ export function useUpdateEffect(
     }
   }, dependencies);
 }
+
+type CategoryFiltersProps = {
+  categoriesData: string[];
+  renderCategoryFilter: ListRenderItem<string> | null | undefined;
+};
+
+const CategoryFilters = ({
+  categoriesData,
+  renderCategoryFilter,
+}: CategoryFiltersProps) => (
+  <DynamicView pt="l">
+    <DynamicText pl="l" mb="s" fontWeight="700" fontSize={18}>
+      ORDER FOR DELIVERY
+    </DynamicText>
+    <FlatList
+      nestedScrollEnabled
+      showsHorizontalScrollIndicator={false}
+      horizontal
+      contentContainerStyle={styles.categoryContent}
+      data={categoriesData}
+      ItemSeparatorComponent={CategorySeparator}
+      renderItem={renderCategoryFilter}
+    />
+    <DynamicView paddingHorizontal="l" mt="l">
+      <DynamicView height={1} backgroundColor="#D9D9D9" />
+    </DynamicView>
+  </DynamicView>
+);
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -193,63 +217,18 @@ const Home = () => {
     <FlatList
       nestedScrollEnabled
       data={menu}
-      ListHeaderComponent={() => (
+      ListHeaderComponent={
         <DynamicView>
-          <DynamicView p="l" backgroundColor="#495E57">
-            <DynamicText fontSize={36} color="#F4CE14" fontWeight="500">
-              Little Lemon
-            </DynamicText>
-            <DynamicView mt="xxs" flexDirection="row">
-              <DynamicView pt="xL" flex={1}>
-                <DynamicView position="absolute">
-                  <DynamicText fontSize={24} color="#FFFFFF" fontWeight="500">
-                    Chicago
-                  </DynamicText>
-                </DynamicView>
-                <DynamicText
-                  mt="m"
-                  fontSize={16}
-                  color="#FFFFFF"
-                  fontWeight="500">
-                  We are a family owned Mediterranean restaurant, focused on
-                  traditional recipes served with a modern twist.
-                </DynamicText>
-              </DynamicView>
-              <DynamicImage ml="m" source={homeImg} width={140} height={150} />
-            </DynamicView>
-            <DynamicView
-              mt="l"
-              backgroundColor="#D9D9D9"
-              pl="m"
-              width="100%"
-              flexDirection="row"
-              height={36}
-              alignItems="center"
-              borderRadius={36}
-              mr="auto">
-              <FontAwesome name="search" size={18} color="#333333" />
-              <DynamicTextInput color="#333333" ml="xs" flex={1} />
-            </DynamicView>
-          </DynamicView>
-          <DynamicView pt="l">
-            <DynamicText pl="l" mb="s" fontWeight="700" fontSize={18}>
-              ORDER FOR DELIVERY
-            </DynamicText>
-            <FlatList
-              nestedScrollEnabled
-              showsHorizontalScrollIndicator={false}
-              horizontal
-              contentContainerStyle={styles.categoryContent}
-              data={categoriesData}
-              ItemSeparatorComponent={() => <DynamicView width={10} />}
-              renderItem={renderCategoryFilter}
-            />
-            <DynamicView paddingHorizontal="l" mt="l">
-              <DynamicView height={1} backgroundColor="#D9D9D9" />
-            </DynamicView>
-          </DynamicView>
+          <TopSection
+            searchBarText={searchBarText}
+            handleSearchChange={handleSearchChange}
+          />
+          <CategoryFilters
+            categoriesData={categoriesData}
+            renderCategoryFilter={renderCategoryFilter}
+          />
         </DynamicView>
-      )}
+      }
       ListFooterComponent={<Footer isLoading={isLoading} />}
       ItemSeparatorComponent={Separator}
       renderItem={renderMenuItem}
