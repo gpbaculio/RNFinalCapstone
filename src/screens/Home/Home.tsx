@@ -3,7 +3,12 @@ import {ActivityIndicator, Alert, FlatList, ListRenderItem} from 'react-native';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-import {DynamicImage, DynamicText, DynamicView} from 'src/components';
+import {
+  DynamicImage,
+  DynamicText,
+  DynamicTextInput,
+  DynamicView,
+} from 'src/components';
 import MenuItem from './MenuItem';
 
 import {createTable, getMenuItems, saveMenuItems} from './database';
@@ -91,13 +96,15 @@ const Home = () => {
             <DynamicView
               mt="l"
               backgroundColor="#D9D9D9"
-              padding="xxs"
-              width={36}
+              pl="m"
+              width="100%"
+              flexDirection="row"
               height={36}
+              alignItems="center"
               borderRadius={36}
-              variant="center"
               mr="auto">
               <FontAwesome name="search" size={18} color="#333333" />
+              <DynamicTextInput color="#333333" ml="xs" flex={1} />
             </DynamicView>
           </DynamicView>
           <DynamicView pt="l">
