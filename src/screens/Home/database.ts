@@ -10,7 +10,7 @@ export async function createTable() {
     db.transaction(
       tx => {
         tx.executeSql(
-          'create table if not exists menuitems (id INTEGER PRIMARY KEY AUTOINCREMENT, name text, price decimal(12, 2), description text, image text);',
+          'create table if not exists menuitems (id INTEGER PRIMARY KEY AUTOINCREMENT, name text, price decimal(12, 2), description text, image text,category text);',
         );
       },
       reject,
@@ -33,9 +33,9 @@ const handleSQLParams = (menuItems: Menu[]) => {
   let txParams: (number | string)[] = [];
   let queryValues: string[] = [];
 
-  menuItems.forEach(({name, price, description, image}) => {
-    queryValues.push('(?, ?, ?, ?)');
-    txParams.push(name, price, description, image);
+  menuItems.forEach(({name, price, description, image, category}) => {
+    queryValues.push('(?, ?, ?, ?, ?)');
+    txParams.push(name, price, description, image, category);
   });
 
   return {txParams, queryValues};
@@ -46,7 +46,7 @@ export function saveMenuItems(menuItems: Menu[]) {
 
   return new Promise((resolve, reject) => {
     if (txParams.length && queryValues.length) {
-      const sqlQuery = `insert into menuitems (name, price, description,image) values ${queryValues.join(
+      const sqlQuery = `insert into menuitems (name, price, description,image,category) values ${queryValues.join(
         ',',
       )}`;
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, FlatList} from 'react-native';
+import {ActivityIndicator, Alert, FlatList} from 'react-native';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
@@ -23,14 +23,17 @@ export type Menu = {
   price: string;
   description: string;
   image: string;
+  category: string;
 };
 
 const Home = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [menu, setMenu] = useState<Menu[]>([]);
 
   useEffect(() => {
     const componentDidMount = async () => {
       try {
+        setIsLoading(true);
         await createTable();
         let menuItems = await getMenuItems();
 
@@ -42,6 +45,8 @@ const Home = () => {
       } catch (e) {
         // Handle error
         Alert.alert((e as Error).message);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -113,6 +118,13 @@ const Home = () => {
           </DynamicView>
         </DynamicView>
       )}
+      ListFooterComponent={() =>
+        isLoading ? (
+          <DynamicView marginVertical="xxL">
+            <ActivityIndicator size="large" color="#495E57" />
+          </DynamicView>
+        ) : null
+      }
       ItemSeparatorComponent={() => (
         <DynamicView
           height={1}
