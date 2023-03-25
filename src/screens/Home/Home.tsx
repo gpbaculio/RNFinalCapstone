@@ -18,23 +18,6 @@ const fetchData = async () => {
   return [...data.menu];
 };
 
-const menuData = [
-  {
-    name: 'Greek Salad',
-    price: 12.99,
-    description:
-      'Our delicious salad is served with Feta cheese and peeled cucumber. Includes tomatoes, onions, olives, salt and oregano in the ingredients.',
-    image: 'greekSalad.jpg',
-  },
-  {
-    name: 'Bruschetta',
-    price: 7.99,
-    description:
-      'Delicious grilled bread rubbed with garlic and topped with olive oil and salt. Our Bruschetta includes tomato and cheese.',
-    image: 'bruschetta.jpg',
-  },
-];
-
 export type Menu = {
   name: string;
   price: string;
@@ -70,7 +53,7 @@ const Home = () => {
   return (
     <FlatList
       nestedScrollEnabled
-      data={menuData}
+      data={menu}
       ListHeaderComponent={() => (
         <DynamicView>
           <DynamicView p="l" backgroundColor="#495E57">
