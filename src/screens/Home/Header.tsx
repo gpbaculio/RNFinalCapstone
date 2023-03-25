@@ -9,7 +9,7 @@ const Header = () => {
   const {width} = useWindowDimensions();
 
   return (
-    <DynamicView padding="xs" variant="center">
+    <DynamicView padding="xs" variant="center" bg="#D9D9D9">
       <DynamicImage
         source={logo}
         width={width * 0.4}
