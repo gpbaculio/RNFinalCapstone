@@ -9,6 +9,7 @@ import {
   DynamicTextInput,
   DynamicView,
 } from 'src/components';
+import CategoryFilter from './CategoryFilter';
 import MenuItem from './MenuItem';
 
 import {createTable, getMenuItems, saveMenuItems} from './database';
@@ -59,8 +60,6 @@ const Home = () => {
     componentDidMount();
   }, []);
 
-  const pills = ['Lunch', 'Mains', 'Desserts', 'A La Carte', 'Specials'];
-
   const renderMenuItem: ListRenderItem<Menu> | null | undefined = ({item}) => (
     <MenuItem item={item} />
   );
@@ -69,6 +68,33 @@ const Home = () => {
   const categoriesData = categories.filter(
     (item, pos) => categories.indexOf(item) === pos,
   );
+  const [filterSelections, setFilterSelections] = useState(
+    categoriesData.map(() => false),
+  );
+
+  const handleFiltersChange = (index: number) => {
+    const arrayCopy = [...filterSelections];
+    arrayCopy[index] = !filterSelections[index];
+    setFilterSelections(arrayCopy);
+  };
+
+  const renderCategoryFilter: ListRenderItem<string> | null | undefined = ({
+    item,
+    index,
+  }) => {
+    const isSelected = filterSelections[index];
+    const onFilterPress = () => {
+      handleFiltersChange(index);
+    };
+
+    return (
+      <CategoryFilter
+        item={item}
+        isSelected={isSelected}
+        onFilterPress={onFilterPress}
+      />
+    );
+  };
 
   return (
     <FlatList
@@ -123,11 +149,7 @@ const Home = () => {
               contentContainerStyle={{paddingLeft: 16}}
               data={categoriesData}
               ItemSeparatorComponent={() => <DynamicView width={10} />}
-              renderItem={({item}) => (
-                <DynamicView variant="orderPill">
-                  <DynamicText variant="orderPill">{item}</DynamicText>
-                </DynamicView>
-              )}
+              renderItem={renderCategoryFilter}
             />
             <DynamicView paddingHorizontal="l" mt="l">
               <DynamicView height={1} backgroundColor="#D9D9D9" />

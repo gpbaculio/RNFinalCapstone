@@ -56,6 +56,11 @@ export const buttonVariants = {
     borderRadius: 8,
     alignItems: 'center',
   },
+  orderPill: {
+    paddingHorizontal: 's',
+    paddingVertical: 'xs',
+    borderRadius: 16,
+  },
 };
 
 export const containerVariants = {
@@ -78,12 +83,6 @@ export const containerVariants = {
     width: 60,
     height: 60,
     borderRadius: 60,
-  },
-  orderPill: {
-    paddingHorizontal: 's',
-    paddingVertical: 'xs',
-    borderRadius: 16,
-    backgroundColor: '#D9D9D9',
   },
 };
 
