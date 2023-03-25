@@ -39,15 +39,15 @@ const Profile = () => {
 
   // phone: 14844731597
   const defaultValues: ProfileFormData = {
-    firstName: state.user?.firstName || '',
-    lastName: state.user?.lastName || '',
-    email: state.user?.email || '',
-    phoneNumber: state.user?.phoneNumber || '',
-    emailStatuses: !!state.user?.emailStatuses,
-    passwordChanges: !!state.user?.passwordChanges,
-    specialOffers: !!state.user?.specialOffers,
-    newsLetter: !!state.user?.newsLetter,
-    image: state.user?.image || '',
+    firstName: state?.user?.firstName || '',
+    lastName: state?.user?.lastName || '',
+    email: state?.user?.email || '',
+    phoneNumber: state?.user?.phoneNumber || '',
+    emailStatuses: !!state?.user?.emailStatuses,
+    passwordChanges: !!state?.user?.passwordChanges,
+    specialOffers: !!state?.user?.specialOffers,
+    newsLetter: !!state?.user?.newsLetter,
+    image: state?.user?.image || '',
   };
 
   const formKeys = Object.keys(defaultValues);

@@ -21,8 +21,8 @@ const Navigation = () => {
 
   return (
     <NativeStack.Navigator
-      initialRouteName={state.user ? 'Home' : 'Onboarding'}>
-      {state.user ? (
+      initialRouteName={!!state?.user ? 'Home' : 'Onboarding'}>
+      {!!state?.user ? (
         <>
           <NativeStack.Screen
             name="Home"

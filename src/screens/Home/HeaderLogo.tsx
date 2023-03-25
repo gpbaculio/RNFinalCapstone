@@ -22,9 +22,9 @@ const HeaderLogo = () => {
       position="absolute"
       right={0}
       mr="m">
-      {state.user?.image ? (
+      {state?.user?.image ? (
         <DynamicImage
-          source={{uri: state.user?.image}}
+          source={{uri: state?.user?.image}}
           width={44}
           height={44}
           borderRadius={44}
@@ -39,8 +39,8 @@ const HeaderLogo = () => {
           variant="center">
           <DynamicView width={19} variant="center">
             <DynamicText color="#FFFFFF" fontWeight="600">
-              {`${state.user?.firstName?.charAt(0).toUpperCase()} ${
-                state.user?.lastName?.charAt(0).toUpperCase() || ''
+              {`${state?.user?.firstName?.charAt(0).toUpperCase()} ${
+                state?.user?.lastName?.charAt(0).toUpperCase() || ''
               }`.trim()}
             </DynamicText>
           </DynamicView>

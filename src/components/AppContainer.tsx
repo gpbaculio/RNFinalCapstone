@@ -14,21 +14,21 @@ import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 type AppContainerProps = {children: React.ReactNode};
 
 const AppContainer = ({children}: AppContainerProps) => (
-  <NavigationContainer>
-    <SafeAreaProvider>
-      <GestureHandlerRootView style={styles.container}>
-        <SafeAreaView style={styles.container}>
-          <ThemeProvider theme={restyleTheme}>
-            <Provider store={store}>
+  <Provider store={store}>
+    <NavigationContainer>
+      <SafeAreaProvider>
+        <GestureHandlerRootView style={styles.container}>
+          <SafeAreaView style={styles.container}>
+            <ThemeProvider theme={restyleTheme}>
               <PersistGate loading={null} persistor={persistor}>
                 {children}
               </PersistGate>
-            </Provider>
-          </ThemeProvider>
-        </SafeAreaView>
-      </GestureHandlerRootView>
-    </SafeAreaProvider>
-  </NavigationContainer>
+            </ThemeProvider>
+          </SafeAreaView>
+        </GestureHandlerRootView>
+      </SafeAreaProvider>
+    </NavigationContainer>
+  </Provider>
 );
 
 export default AppContainer;
