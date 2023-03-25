@@ -9,20 +9,25 @@ import {PersistGate} from 'redux-persist/integration/react';
 
 import restyleTheme from 'restyleTheme';
 import {store, persistor} from 'src/store';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 
 type AppContainerProps = {children: React.ReactNode};
 
 const AppContainer = ({children}: AppContainerProps) => (
   <NavigationContainer>
-    <GestureHandlerRootView style={styles.container}>
-      <ThemeProvider theme={restyleTheme}>
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            {children}
-          </PersistGate>
-        </Provider>
-      </ThemeProvider>
-    </GestureHandlerRootView>
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={styles.container}>
+        <SafeAreaView style={styles.container}>
+          <ThemeProvider theme={restyleTheme}>
+            <Provider store={store}>
+              <PersistGate loading={null} persistor={persistor}>
+                {children}
+              </PersistGate>
+            </Provider>
+          </ThemeProvider>
+        </SafeAreaView>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   </NavigationContainer>
 );
 
