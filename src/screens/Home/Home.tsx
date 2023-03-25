@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, FlatList, ListRenderItem} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  ListRenderItem,
+  StyleSheet,
+} from 'react-native';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
@@ -31,6 +37,28 @@ export type Menu = {
   description: string;
   image: string;
   category: string;
+};
+
+const Separator = () => (
+  <DynamicView
+    height={1}
+    backgroundColor="#D9D9D9"
+    marginVertical="xs"
+    marginHorizontal="l"
+  />
+);
+
+type FooterProps = {isLoading: boolean};
+
+const Footer = ({isLoading}: FooterProps) => {
+  if (isLoading)
+    return (
+      <DynamicView marginVertical="xxL">
+        <ActivityIndicator size="large" color="#495E57" />
+      </DynamicView>
+    );
+
+  return null;
 };
 
 const Home = () => {
@@ -146,7 +174,7 @@ const Home = () => {
               nestedScrollEnabled
               showsHorizontalScrollIndicator={false}
               horizontal
-              contentContainerStyle={{paddingLeft: 16}}
+              contentContainerStyle={styles.categoryContent}
               data={categoriesData}
               ItemSeparatorComponent={() => <DynamicView width={10} />}
               renderItem={renderCategoryFilter}
@@ -157,24 +185,17 @@ const Home = () => {
           </DynamicView>
         </DynamicView>
       )}
-      ListFooterComponent={() =>
-        isLoading ? (
-          <DynamicView marginVertical="xxL">
-            <ActivityIndicator size="large" color="#495E57" />
-          </DynamicView>
-        ) : null
-      }
-      ItemSeparatorComponent={() => (
-        <DynamicView
-          height={1}
-          backgroundColor="#D9D9D9"
-          marginVertical="xs"
-          marginHorizontal="l"
-        />
-      )}
+      ListFooterComponent={<Footer isLoading={isLoading} />}
+      ItemSeparatorComponent={Separator}
       renderItem={renderMenuItem}
     />
   );
 };
 
 export default Home;
+
+const styles = StyleSheet.create({
+  categoryContent: {
+    paddingLeft: 16,
+  },
+});
