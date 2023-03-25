@@ -9,7 +9,7 @@ export async function createTable() {
     db.transaction(
       tx => {
         tx.executeSql(
-          'create table if not exists menuitems (id integer primary key not null, uuid text, title text, price text, category text);',
+          'create table if not exists menuitems (id INTEGER PRIMARY KEY AUTOINCREMENT, name text, price text, description text, image text);',
         );
       },
       reject,
