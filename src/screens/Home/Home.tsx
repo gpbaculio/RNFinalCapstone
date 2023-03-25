@@ -1,4 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {
+  DependencyList,
+  EffectCallback,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -8,6 +16,7 @@ import {
 } from 'react-native';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import debounce from 'lodash.debounce';
 
 import {
   DynamicImage,
@@ -18,7 +27,12 @@ import {
 import CategoryFilter from './CategoryFilter';
 import MenuItem from './MenuItem';
 
-import {createTable, getMenuItems, saveMenuItems} from './database';
+import {
+  createTable,
+  filterByQueryAndCategories,
+  getMenuItems,
+  saveMenuItems,
+} from './database';
 
 import {homeImg} from 'assets';
 
@@ -61,9 +75,27 @@ const Footer = ({isLoading}: FooterProps) => {
   return null;
 };
 
+export function useUpdateEffect(
+  effect: EffectCallback,
+  dependencies: DependencyList = [],
+) {
+  const isInitialMount = useRef(true);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      return effect();
+    }
+  }, dependencies);
+}
+
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [menu, setMenu] = useState<Menu[]>([]);
+  const [query, setQuery] = useState('');
+  const [categoriesData, setCategoriesData] = useState<string[]>([]);
+  const [searchBarText, setSearchBarText] = useState('');
 
   useEffect(() => {
     const componentDidMount = async () => {
@@ -76,6 +108,11 @@ const Home = () => {
           menuItems = await fetchData();
           saveMenuItems(menuItems);
         }
+        const categories = menuItems.map(({category}) => category);
+        const categoriesData = categories.filter(
+          (item, pos) => categories.indexOf(item) === pos,
+        );
+        setCategoriesData(categoriesData);
         setMenu(menuItems);
       } catch (e) {
         // Handle error
@@ -92,13 +129,41 @@ const Home = () => {
     <MenuItem item={item} />
   );
 
-  const categories = menu.map(({category}) => category);
-  const categoriesData = categories.filter(
-    (item, pos) => categories.indexOf(item) === pos,
-  );
   const [filterSelections, setFilterSelections] = useState(
     categoriesData.map(() => false),
   );
+
+  const lookup = useCallback((q: string) => {
+    setQuery(q);
+  }, []);
+
+  const debouncedLookup = useMemo(() => debounce(lookup, 500), [lookup]);
+
+  const handleSearchChange = (text: string) => {
+    setSearchBarText(text);
+    debouncedLookup(text);
+  };
+
+  useUpdateEffect(() => {
+    (async () => {
+      const activeCategories = categoriesData.filter((s, i) => {
+        // If all filters are deselected, all categories are active
+        if (filterSelections.every(item => item === false)) {
+          return true;
+        }
+        return filterSelections[i];
+      });
+      try {
+        const menuItems = await filterByQueryAndCategories(
+          query,
+          activeCategories,
+        );
+        setMenu(menuItems);
+      } catch (e) {
+        Alert.alert((e as Error).message);
+      }
+    })();
+  }, [filterSelections, query]);
 
   const handleFiltersChange = (index: number) => {
     const arrayCopy = [...filterSelections];

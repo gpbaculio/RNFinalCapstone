@@ -46,7 +46,7 @@ export function saveMenuItems(menuItems: Menu[]) {
 
   return new Promise((resolve, reject) => {
     if (txParams.length && queryValues.length) {
-      const sqlQuery = `insert into menuitems (name, price, description,image,category) values ${queryValues.join(
+      const sqlQuery = `insert into menuitems (name, price, description, image, category) values ${queryValues.join(
         ',',
       )}`;
 
@@ -79,7 +79,7 @@ export async function filterByQueryAndCategories(
     categoryQuery.push('?');
   });
 
-  const sqlQuery = `select * from menuitems WHERE title LIKE ?${
+  const sqlQuery = `select * from menuitems WHERE name LIKE ?${
     categoryQuery.length ? ` AND category IN (${categoryQuery.join(',')})` : ``
   }`;
 
@@ -88,7 +88,7 @@ export async function filterByQueryAndCategories(
     ...(activeCategories.length ? activeCategories : []),
   ];
 
-  return new Promise<DataType[]>((resolve, reject) => {
+  return new Promise<Menu[]>((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(sqlQuery, params, (_, {rows}) => {
         resolve(rows._array);
