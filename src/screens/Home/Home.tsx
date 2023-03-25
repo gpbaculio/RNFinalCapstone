@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, FlatList, ScrollView} from 'react-native';
+import {Alert, FlatList} from 'react-native';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import {DynamicImage, DynamicText, DynamicView} from 'src/components';
 
-import {createTable, getMenuItems} from './database';
-import {SectionDataType} from './utils';
+import {createTable, getMenuItems, saveMenuItems} from './database';
 
 import {homeImg} from 'assets';
 
@@ -36,21 +35,27 @@ const menuData = [
   },
 ];
 
+export type Menu = {
+  name: string;
+  price: string;
+  description: string;
+  image: string;
+};
+
 const Home = () => {
-  const [data, setData] = useState<SectionDataType[]>([]);
+  const [menu, setMenu] = useState<Menu[]>([]);
 
   useEffect(() => {
     const componentDidMount = async () => {
       try {
         await createTable();
         let menuItems = await getMenuItems();
-        // useDevLogData(menuItems, "getMenuItems()");
-        // The application only fetches the menu data once from a remote URL
-        // and then stores it into a SQLite database.
-        // After that, every application restart loads the menu from the database
+
         if (!menuItems.length) {
           menuItems = await fetchData();
+          saveMenuItems(menuItems);
         }
+        setMenu(menuItems);
       } catch (e) {
         // Handle error
         Alert.alert((e as Error).message);
