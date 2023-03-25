@@ -1,22 +1,23 @@
-import React from "react";
-import { useWindowDimensions } from "react-native";
+import React from 'react';
+import {useWindowDimensions} from 'react-native';
 
-import { DynamicImage, DynamicView } from "src/components";
-import { logo } from "assets";
+import {DynamicImage, DynamicView} from 'src/components';
+import {logo} from 'assets';
 
 const Header = () => {
-  const { width } = useWindowDimensions();
+  const {width} = useWindowDimensions();
+
   return (
     <DynamicView
-      width='100%'
-      alignItems='center'
-      backgroundColor='#D9D9D9'
-      paddingVertical='s'>
+      width="100%"
+      alignItems="center"
+      backgroundColor="#D9D9D9"
+      paddingVertical="s">
       <DynamicImage
         source={logo}
         width={width * 0.4}
         height={60}
-        resizeMode='contain'
+        resizeMode="contain"
       />
     </DynamicView>
   );

@@ -20,6 +20,7 @@ import LogoutModal from './LogoutModal';
 import BottomSection from './BottomSection';
 
 import {useAuthentication} from 'src/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type ProfileFormData = {
   firstName: string;
@@ -109,7 +110,9 @@ const Profile = () => {
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const onLogoutPress = () => {
+  const onLogoutPress = async () => {
+    await AsyncStorage.clear();
+
     actions.setUser(null);
   };
 

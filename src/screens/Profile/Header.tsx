@@ -13,6 +13,7 @@ const Header = () => {
   const {width} = useWindowDimensions();
   return (
     <DynamicView
+      backgroundColor="#D9D9D9"
       padding="xs"
       alignItems="center"
       flexDirection="row"

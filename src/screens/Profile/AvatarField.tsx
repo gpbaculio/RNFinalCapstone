@@ -41,8 +41,8 @@ const AvatarField = ({control, pickImage, onRemovePress}: AvatarFieldProps) => {
                   marginBottom="auto"
                   color="#FFFFFF"
                   fontWeight="600">
-                  {`${state.user?.firstName?.charAt(0)} ${
-                    state.user?.lastName?.charAt(0) || ''
+                  {`${state.user?.firstName?.charAt(0).toUpperCase()} ${
+                    state.user?.lastName?.charAt(0).toUpperCase() || ''
                   }`.trim()}
                 </DynamicText>
               </DynamicView>
