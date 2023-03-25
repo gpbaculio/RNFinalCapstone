@@ -1,4 +1,5 @@
 import * as SQLite from 'expo-sqlite';
+import {Menu} from './Home';
 
 import {DataType} from './utils';
 
@@ -9,7 +10,7 @@ export async function createTable() {
     db.transaction(
       tx => {
         tx.executeSql(
-          'create table if not exists menuitems (id integer primary key not null, uuid text, title text, price text, category text);',
+          'create table if not exists menuitems (id INTEGER PRIMARY KEY AUTOINCREMENT, name text, price decimal(12, 2), description text, image text,category text);',
         );
       },
       reject,
@@ -19,7 +20,7 @@ export async function createTable() {
 }
 
 export async function getMenuItems() {
-  return new Promise<DataType[]>(resolve => {
+  return new Promise<Menu[]>(resolve => {
     db.transaction(tx => {
       tx.executeSql('select * from menuitems', [], (_, {rows}) => {
         resolve(rows._array);
@@ -28,45 +29,45 @@ export async function getMenuItems() {
   });
 }
 
-// const handleSQLParams = (menuItems: DataType[]) => {
-//   let txParams: (number | string)[] = [];
-//   let queryValues: string[] = [];
+const handleSQLParams = (menuItems: Menu[]) => {
+  let txParams: (number | string)[] = [];
+  let queryValues: string[] = [];
 
-//   menuItems.forEach(({id, title, price, category}) => {
-//     queryValues.push('(?, ?, ?, ?)');
-//     txParams.push(id, title, price, (category as {title: string}).title);
-//   });
+  menuItems.forEach(({name, price, description, image, category}) => {
+    queryValues.push('(?, ?, ?, ?, ?)');
+    txParams.push(name, price, description, image, category);
+  });
 
-//   return {txParams, queryValues};
-// };
+  return {txParams, queryValues};
+};
 
-// export function saveMenuItems(menuItems: DataType[]) {
-//   const {txParams, queryValues} = handleSQLParams(menuItems);
+export function saveMenuItems(menuItems: Menu[]) {
+  const {txParams, queryValues} = handleSQLParams(menuItems);
 
-//   return new Promise((resolve, reject) => {
-//     if (txParams.length && queryValues.length) {
-//       const sqlQuery = `insert into menuitems (uuid, title, price,category) values ${queryValues.join(
-//         ',',
-//       )}`;
+  return new Promise((resolve, reject) => {
+    if (txParams.length && queryValues.length) {
+      const sqlQuery = `insert into menuitems (name, price, description, image, category) values ${queryValues.join(
+        ',',
+      )}`;
 
-//       db.transaction(tx => {
-//         tx.executeSql(
-//           sqlQuery,
-//           txParams,
-//           (_, {rows}) => {
-//             resolve(rows._array);
-//           },
-//           (_, e) => {
-//             reject(e);
-//             return false;
-//           },
-//         );
-//       }, reject);
-//     } else {
-//       reject(false);
-//     }
-//   });
-// }
+      db.transaction(tx => {
+        tx.executeSql(
+          sqlQuery,
+          txParams,
+          (_, {rows}) => {
+            resolve(rows._array);
+          },
+          (_, e) => {
+            reject(e);
+            return false;
+          },
+        );
+      }, reject);
+    } else {
+      reject(false);
+    }
+  });
+}
 
 export async function filterByQueryAndCategories(
   query: string = '',
@@ -78,7 +79,7 @@ export async function filterByQueryAndCategories(
     categoryQuery.push('?');
   });
 
-  const sqlQuery = `select * from menuitems WHERE title LIKE ?${
+  const sqlQuery = `select * from menuitems WHERE name LIKE ?${
     categoryQuery.length ? ` AND category IN (${categoryQuery.join(',')})` : ``
   }`;
 
@@ -87,7 +88,7 @@ export async function filterByQueryAndCategories(
     ...(activeCategories.length ? activeCategories : []),
   ];
 
-  return new Promise<DataType[]>((resolve, reject) => {
+  return new Promise<Menu[]>((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(sqlQuery, params, (_, {rows}) => {
         resolve(rows._array);
