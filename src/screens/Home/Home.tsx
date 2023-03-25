@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, FlatList} from 'react-native';
+import {ActivityIndicator, Alert, FlatList, ListRenderItem} from 'react-native';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import {DynamicImage, DynamicText, DynamicView} from 'src/components';
+import MenuItem from './MenuItem';
 
 import {createTable, getMenuItems, saveMenuItems} from './database';
 
@@ -54,6 +55,10 @@ const Home = () => {
   }, []);
 
   const pills = ['Lunch', 'Mains', 'Desserts', 'A La Carte', 'Specials'];
+
+  const renderMenuItem: ListRenderItem<Menu> | null | undefined = ({item}) => (
+    <MenuItem item={item} />
+  );
 
   return (
     <FlatList
@@ -133,31 +138,7 @@ const Home = () => {
           marginHorizontal="l"
         />
       )}
-      renderItem={({item}) => (
-        <DynamicView p="l">
-          <DynamicText fontSize={18} mb="xxs" color="#000000" fontWeight="700">
-            {item.name}
-          </DynamicText>
-          <DynamicView flexDirection="row">
-            <DynamicView flex={1}>
-              <DynamicText fontWeight="400" fontSize={16} color="#495E57">
-                {item.description}
-              </DynamicText>
-              <DynamicText fontWeight="500" fontSize={18} color="#495E57">
-                ${item.price}
-              </DynamicText>
-            </DynamicView>
-            <DynamicImage
-              source={{
-                uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${item.image}?raw=true`,
-              }}
-              ml="s"
-              width={83}
-              height={83}
-            />
-          </DynamicView>
-        </DynamicView>
-      )}
+      renderItem={renderMenuItem}
     />
   );
 };
