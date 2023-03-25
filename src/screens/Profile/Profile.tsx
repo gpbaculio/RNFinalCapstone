@@ -111,9 +111,10 @@ const Profile = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const onLogoutPress = async () => {
-    await AsyncStorage.clear();
-
-    actions.setUser(null);
+    setShowLogoutModal(false);
+    setTimeout(() => {
+      actions.setUser(null);
+    }, 100);
   };
 
   const hideLogoutModal = () => {
